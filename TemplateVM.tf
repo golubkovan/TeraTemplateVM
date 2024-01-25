@@ -19,4 +19,20 @@ resource "yandex_compute_instance" "build-vm" {
   metadata = {
     user-data = "${file("/mnt/c/Users/golubkovan/VsCode/terraformHW/terraform1/meta.txt")}"
   }
+  #-------Connect to Vm build---------#
+connection {
+    type     = "ssh"
+    user     = "agolubkov"
+    private_key = file("~/.ssh/id_rsa")
+    host = yandex_compute_instance.build-vm.network_interface.0.nat_ip_address
+  }
+
+  provisioner "remote-exec" {
+    inline = [
+      "sudo apt update", 
+      "sudo apt install docker.io -y"
+    ]
+  }
+
+
 }
